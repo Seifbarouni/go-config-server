@@ -12,7 +12,7 @@ import (
 )
 
 func getConfigFiles() []os.FileInfo {
-	f, err := os.Open("../config")
+	f, err := os.Open("/config")
 	if err != nil {
 		log.Fatal(err)
 	}
