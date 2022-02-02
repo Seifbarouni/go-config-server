@@ -12,7 +12,7 @@ import (
 )
 
 func getConfigFiles() []os.FileInfo {
-	f, err := os.Open("/config")
+	f, err := os.Open("./config")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func GenerateRoutes(app *fiber.App) {
 		appName := appAndBranch[0]
 		branchName := appAndBranch[1]
 		
-		yamlFile, err := ioutil.ReadFile("../config/"+file.Name())
+		yamlFile, err := ioutil.ReadFile("./config/"+file.Name())
 		if err != nil {
 			panic(err)
 		}

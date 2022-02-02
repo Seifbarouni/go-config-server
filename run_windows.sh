@@ -1,3 +1,2 @@
 go build -o ./bin/
-cd /bin 
-./go-config-server.exe
+./bin/go-config-server.exe
