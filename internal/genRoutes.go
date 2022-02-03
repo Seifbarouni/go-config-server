@@ -23,41 +23,53 @@ func getConfigFiles() []os.FileInfo {
 	return files
 }
 
+func isValidYamlFileName(fname string) (bool,string,string) {
+	// check if the file is a yaml file
+	if !strings.HasSuffix(fname, ".yaml") && !strings.HasSuffix(fname, ".yml") {
+		return false, "", ""
+	}
+
+	// delete .yaml or .yml from the file name
+	fname = strings.Replace(fname, ".yaml", "", -1)
+	fname = strings.Replace(fname, ".yml", "", -1)
+
+	// check if - exists  in the file name
+	dashCount:=strings.Count(fname, "-")
+
+	if  dashCount == 0 {
+		return false, "", ""
+	}
+
+	// check if - exist in the end or the beginning of the file name
+	if strings.HasPrefix(fname, "-") || strings.HasSuffix(fname, "-") {
+		return false, "", ""
+	}
+
+	// get the last index of -
+	lastDashIndex := strings.LastIndex(fname, "-")
+	appName:=fname[:lastDashIndex]
+	branchName:=fname[lastDashIndex+1:]
+	
+	
+	return true, appName, branchName
+}
+
 func GenerateRoutes(app *fiber.App) {
-	configFiles:= getConfigFiles()
+	configFiles := getConfigFiles()
 	for _, file := range configFiles {
 		if file.IsDir() {
 			continue
 		}
-		fname:=file.Name()
-		// check if the file is a yaml file
-		if !strings.HasSuffix(fname,".yaml") && !strings.HasSuffix(fname,".yml") {
-			fmt.Printf("%s is not a yaml file\n",fname)
-			continue
-		}
-		// delete .yaml or .yml from the file name
-		fname = strings.Replace(fname,".yaml","",-1)
-		fname = strings.Replace(fname,".yml","",-1)
+		fname := file.Name()
 
-		// check if - exists only once in the file name
-		if strings.Count(fname, "-") != 1 {
-			fmt.Printf("%s is not a valid file name\nThe file name should be [appName]-[branchName].yaml",fname)
+		valid, appName, branchName := isValidYamlFileName(fname)
+
+		if !valid {
 			continue
 		}
 		
-		// check if - exist in the end or the beginning of the file name
-		if strings.HasPrefix(fname,"-") || strings.HasSuffix(fname,"-") {
-			fmt.Printf("%s is not a valid file name\nThe file name should be [appName]-[branchName].yaml",fname)
-			continue
-		}
-		
-		// split the file name by -
-		appAndBranch:=strings.Split(fname,"-")
-		
-		appName := appAndBranch[0]
-		branchName := appAndBranch[1]
-		
-		yamlFile, err := ioutil.ReadFile("./config/"+file.Name())
+
+		yamlFile, err := ioutil.ReadFile("./config/" + file.Name())
 		if err != nil {
 			panic(err)
 		}
@@ -67,7 +79,7 @@ func GenerateRoutes(app *fiber.App) {
 			panic(err)
 		}
 
-		app.Get(fmt.Sprintf("/%s/%s",appName,branchName),func(c *fiber.Ctx) error {
+		app.Get(fmt.Sprintf("/%s/%s", appName, branchName), func(c *fiber.Ctx) error {
 			return c.JSON(i)
 		})
 
