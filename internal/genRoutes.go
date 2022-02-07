@@ -82,6 +82,5 @@ func GenerateRoutes(app *fiber.App) {
 		app.Get(fmt.Sprintf("/%s/%s", appName, branchName), func(c *fiber.Ctx) error {
 			return c.JSON(i)
 		})
-
 	}
 }
