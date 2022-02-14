@@ -12,5 +12,5 @@ func main() {
 	app := fiber.New()
 	gen.GenerateRoutes(app)
 
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":3001"))
 }
