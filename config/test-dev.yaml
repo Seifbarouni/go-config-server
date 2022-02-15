@@ -1,2 +1,10 @@
-server:
-  port: 9999
+name: test
+profiles:
+  - dev
+label:
+version: 1.0.0
+state:
+propertySources:
+  - name: http:localhost:3000/test/dev
+    source:
+      server.port: 9999
