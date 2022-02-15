@@ -5,6 +5,6 @@ label:
 version: 1.0.0
 state:
 propertySources:
-  - name: http:localhost:3000/test/dev
+  - name: http:localhost:3001/test/dev
     source:
       server.port: 9999
